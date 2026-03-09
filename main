@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>منظم تبرع الدم - OMAR SUBAIE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            text-align: center;
+            background: #fff8f8;
+            padding: 20px;
+            margin: 0;
+        }
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 15px 35px rgba(198, 40, 40, 0.1);
+            box-sizing: border-box;
+            border-top: 10px solid #c62828;
+        }
+        h2 { color: #c62828; margin-bottom: 5px; font-size: 24px; }
+        .hero-text { color: #555; font-size: 16px; margin-bottom: 20px; line-height: 1.6; }
+        
+        .today-card {
+            background: #fdf2f2;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #ffcdd2;
+            margin-bottom: 25px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            box-sizing: border-box;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        input[type="date"]:focus { border-color: #c62828; outline: none; }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 17px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-main { background: #c62828; color: white; margin-top: 15px; box-shadow: 0 4px 10px rgba(198, 40, 40, 0.3); }
+        .btn-copy { background: #546e7a; color: white; }
+        .btn-share { background: #2e7d32; color: white; } /* لون أخضر للمشاركة */
+        
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .btn-cal { 
+            background: #1e88e5; 
+            color: white; 
+            font-size: 11px; 
+            padding: 7px 10px; 
+            width: auto; 
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            margin-top: 25px;
+            border-collapse: collapse;
+            display: none; 
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .schedule-table th, .schedule-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        .schedule-table th { background-color: #f8f9fa; color: #c62828; border-bottom: 2px solid #c62828; }
+        
+        .result-text { font-size: 20px; color: #2e7d32; font-weight: bold; margin: 10px 0; }
+        
+        .quote-box {
+            font-style: italic;
+            color: #7f8c8d;
+            margin: 20px 0;
+            padding: 10px;
+            border-left: 3px solid #c62828;
+            border-right: 3px solid #c62828;
+            background: #fafafa;
+        }
+
+        .footer-signature {
+            margin-top: 40px;
+            font-size: 13px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .omar-tag {
+            color: #c62828;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🩸 بدمك تُحيي نفسًا</h2>
+    <p class="hero-text">
+        "التبرع بالدم ليس مجرد إجراء طبي، بل هو أسمى آيات العطاء الإنساني. شكراً لكونك سبباً في إنقاذ حياة."
+    </p>
+    
+    <div class="today-card">
+        <h3>🌟 موعد بطولتك القادم:</h3>
+        <p style="font-size: 13px; color: #666; margin: 0;">(إذا تبرعت اليوم، يمكنك التبرع مجدداً في:)</p>
+        <div id="todayResult" class="result-text"></div>
+        <div id="todayHijri" style="color: #666; font-size: 14px;"></div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+
+    <h3>🗓️ خطط لرحلة عطائك</h3>
+    <p style="font-size: 14px; color: #888;">اختر تاريخ أول تبرع لنجدول لك سنة كاملة من الأجر:</p>
+    <input type="date" id="inputDate">
+    <button class="btn-main" onclick="processDate()">إظهار جدول التبرعات الخمسة ✨</button>
+
+    <table id="resultTable" class="schedule-table">
+        <thead>
+            <tr>
+                <th>الترتيب</th>
+                <th>التاريخ (ميلادي/هجري)</th>
+                <th>التقويم</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <div id="motivationMsg" class="quote-box" style="display:none;"></div>
+
+    <div id="actionButtons" style="display:none;">
+        <button class="btn-copy" onclick="copyFullData()">📋 نسخ الجدول للملاحظات</button>
+        <button class="btn-share" onclick="shareTable()">📤 مشاركة أو طباعة الجدول</button>
+    </div>
+
+    <div class="footer-signature">
+        <p>قال تعالى: <b>﴿وَمَنْ أَحْيَاهَا فَكَأَنَّمَا أَحْيَا النَّاسَ جَمِيعًا﴾</b></p>
+        تم التصميم بواسطة <span class="omar-tag">OMAR SUBAIE</span> © 2026
+    </div>
+</div>
+
+<script>
+    const INTERVAL = 56;
+    const quotes = [
+        "قطرة من دمك.. حياة لغيرك ❤️",
+        "تبرعك بالدم زكاة لبدنك وصدقة جارية 🌟",
+        "أنت اليوم بطل في حياة شخص لا تعرفه 🦸‍♂️",
+        "بدمك تمنح الآخرين فرصة ثانية للحياة 🤝",
+        "عطاؤك يزرع الأمل في قلوب الكثيرين 🌷"
+    ];
+
+    function toHijri(date) {
+        return new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        }).format(date);
+    }
+
+    window.onload = function() {
+        let d = new Date();
+        d.setDate(d.getDate() + INTERVAL);
+        document.getElementById("todayResult").innerText = d.toLocaleDateString('ar-EG');
+        document.getElementById("todayHijri").innerText = "الموافق هجرياً: " + toHijri(d);
+    };
+
+    function openCalendar(dateStr) {
+        const d = new Date(dateStr);
+        const dateFormatted = d.toISOString().replace(/-|:|\.\d+/g, "").substring(0, 8);
+        const title = encodeURIComponent("موعد تبرع بالدم 🩸");
+        const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateFormatted}/${dateFormatted}&details=تذكير+بموعد+التبرع+بالدم+المجدول`;
+        window.open(googleUrl, '_blank');
+    }
+
+    function processDate() {
+        let val = document.getElementById("inputDate").value;
+        if(!val) { alert("لطفاً اختر التاريخ"); return; }
+
+        let startDate = new Date(val);
+        let tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = ""; 
+
+        let rollingDate = new Date(startDate);
+        
+        for(let i=1; i<=5; i++) {
+            let dateISO = rollingDate.toISOString().split('T')[0];
+            let dateArabic = rollingDate.toLocaleDateString('ar-EG');
+            let hijri = toHijri(rollingDate);
+            
+            let row = `<tr>
+                <td><b>${i}</b></td>
+                <td><b>${dateArabic}</b><br><small>${hijri}</small></td>
+                <td><button class="btn-cal" onclick="openCalendar('${dateISO}')">إضافة 📅</button></td>
+            </tr>`;
+            tableBody.innerHTML += row;
+            rollingDate.setDate(rollingDate.getDate() + INTERVAL);
+        }
+        
+        document.getElementById("resultTable").style.display = "table";
+        document.getElementById("actionButtons").style.display = "block";
+        
+        let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        let msgBox = document.getElementById("motivationMsg");
+        msgBox.innerText = randomQuote;
+        msgBox.style.display = "block";
+
+        document.getElementById("resultTable").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // دالة لجلب نص الجدول مرتباً
+    function getTableText() {
+        let rows = document.querySelectorAll("#tableBody tr");
+        let text = "🗓️ جدول تبرعاتي بالدم (تصميم عمر):\n\n";
+        rows.forEach((row, index) => {
+            let date = row.querySelectorAll("td")[1].innerText.replace("\n", " - ");
+            text += `${index + 1}. موعد: ${date}\n`;
+        });
+        text += "\nبدمك تُحيي نفساً.. جزاك الله خيراً.";
+        return text;
+    }
+
+    function copyFullData() {
+        navigator.clipboard.writeText(getTableText()).then(() => alert("✅ تم نسخ جدول العطاء بنجاح"));
+    }
+
+    // وظيفة المشاركة الاحترافية (Web Share API)
+    async function shareTable() {
+        const shareData = {
+            title: 'جدول تبرعات الدم',
+            text: getTableText(),
+        };
+
+        try {
+            if (navigator.share) {
+                // تفتح قائمة المشاركة الأصلية في الآيفون أو الأندرويد
+                await navigator.share(shareData);
+            } else {
+                // إذا كان المتصفح قديماً ولا يدعم المشاركة، نقوم بالنسخ كبديل
+                copyFullData();
+                alert("المشاركة غير مدعومة في هذا المتصفح، تم نسخ النص بدلاً من ذلك.");
+            }
+        } catch (err) {
+            console.log("إلغاء المشاركة أو خطأ: ", err);
+        }
+    }
+</script>
+
+</body>
+</html>
