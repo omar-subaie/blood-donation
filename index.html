@@ -179,10 +179,7 @@
     }
 
     window.onload = function() {
-        let d = new Date();
-        d.setDate(d.getDate() + INTERVAL);
-        document.getElementById("todayResult").innerText = d.toLocaleDateString('ar-EG');
-        document.getElementById("todayHijri").innerText = "الموافق هجرياً: " + toHijri(d);
+        document.getElementById("inputDate").valueAsDate = new Date();
     };
 
     function openCalendar(dateStr) {
