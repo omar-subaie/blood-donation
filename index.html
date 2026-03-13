@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>منظم تبرع الدم - OMAR SUBAIE</title>
+    <title>منظم تبرع الدم</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -259,7 +259,7 @@
     // دوال النسخ والمشاركة كما هي
     function getTableText() {
         let rows = document.querySelectorAll("#tableBody tr");
-        let text = "🗓️ جدول تبرعاتي بالدم (عمر السبيعي):\n\n";
+        let text = "🗓️ جدول تبرعاتي بالدم :\n\n";
         rows.forEach((row, index) => {
             let date = row.querySelectorAll("td")[1].innerText.replace("\n", " - ");
             text += `${index + 1}. ${date}\n`;
