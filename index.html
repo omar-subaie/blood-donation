@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>منظم تبرع الدم</title>
+    <title>منظم تبرع الدم - OMAR SUBAIE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -44,6 +44,7 @@
             box-sizing: border-box;
             margin-top: 10px;
             transition: 0.3s;
+            text-align: center;
         }
         input[type="date"]:focus { border-color: #c62828; outline: none; }
 
@@ -60,7 +61,7 @@
         }
         .btn-main { background: #c62828; color: white; margin-top: 15px; box-shadow: 0 4px 10px rgba(198, 40, 40, 0.3); }
         .btn-copy { background: #546e7a; color: white; }
-        .btn-share { background: #2e7d32; color: white; } /* لون أخضر للمشاركة */
+        .btn-share { background: #2e7d32; color: white; }
         
         button:hover { opacity: 0.9; transform: translateY(-2px); }
 
@@ -121,22 +122,22 @@
 <div class="box">
     <h2>🩸 بدمك تُحيي نفسًا</h2>
     <p class="hero-text">
-        "التبرع بالدم ليس مجرد إجراء طبي، بل هو أسمى آيات العطاء الإنساني. شكراً لكونك سبباً في إنقاذ حياة."
+        "التبرع بالدم ليس مجرد إجراء طبي، بل هو أسمى آيات العطاء الإنساني."
     </p>
     
     <div class="today-card">
         <h3>🌟 موعد بطولتك القادم:</h3>
         <p style="font-size: 13px; color: #666; margin: 0;">(إذا تبرعت اليوم، يمكنك التبرع مجدداً في:)</p>
-        <div id="todayResult" class="result-text"></div>
+        <div id="todayResult" class="result-text">-- / -- / ----</div>
         <div id="todayHijri" style="color: #666; font-size: 14px;"></div>
     </div>
 
     <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
 
     <h3>🗓️ خطط لرحلة عطائك</h3>
-    <p style="font-size: 14px; color: #888;">اختر تاريخ أول تبرع لنجدول لك سنة كاملة من الأجر:</p>
+    <p style="font-size: 14px; color: #888;">حدد تاريخ آخر تبرع لجدولة سنة كاملة:</p>
     <input type="date" id="inputDate">
-    <button class="btn-main" onclick="processDate()">إظهار جدول التبرعات الخمسة ✨</button>
+    <button class="btn-main" onclick="processDate()">إظهار جدول المواعيد القادمة ✨</button>
 
     <table id="resultTable" class="schedule-table">
         <thead>
@@ -153,7 +154,7 @@
 
     <div id="actionButtons" style="display:none;">
         <button class="btn-copy" onclick="copyFullData()">📋 نسخ الجدول للملاحظات</button>
-        <button class="btn-share" onclick="shareTable()">📤 مشاركة أو طباعة الجدول</button>
+        <button class="btn-share" onclick="shareTable()">📤 مشاركة الجدول</button>
     </div>
 
     <div class="footer-signature">
@@ -178,119 +179,106 @@
         }).format(date);
     }
 
-   window.onload = function() {
-    // 1. وضع تاريخ اليوم في خانة الإدخال ليظهر في الهاتف
-    let today = new Date();
-    document.getElementById("inputDate").valueAsDate = today;
+    window.onload = function() {
+        let today = new Date();
+        document.getElementById("inputDate").valueAsDate = today;
 
-    // 2. حساب موعد التبرع القادم (اليوم + 56 يوم) لعرضه في البطاقة العلوية
-    let nextDate = new Date();
-    nextDate.setDate(today.getDate() + INTERVAL);
+        let next = new Date();
+        next.setDate(today.getDate() + INTERVAL);
+        
+        // فحص العطلة للملخص العلوي
+        if(next.getDay() === 5) next.setDate(next.getDate() + 2);
+        if(next.getDay() === 6) next.setDate(next.getDate() + 1);
 
-    // 3. عرض التاريخ في الصفحة (ميلادي وهجري)
-    document.getElementById("todayResult").innerText = nextDate.toLocaleDateString('ar-EG');
-    document.getElementById("todayHijri").innerText = "الموافق هجرياً: " + toHijri(nextDate);
-};
+        document.getElementById("todayResult").innerText = next.toLocaleDateString('ar-EG');
+        document.getElementById("todayHijri").innerText = "الموافق هجرياً: " + toHijri(next);
+    };
 
-    function openCalendar(dateStr) {
+    function openCalendar(dateStr, isCurrent) {
         const d = new Date(dateStr);
         const dateFormatted = d.toISOString().replace(/-|:|\.\d+/g, "").substring(0, 8);
-        const title = encodeURIComponent("موعد تبرع بالدم 🩸");
-        const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateFormatted}/${dateFormatted}&details=تذكير+بموعد+التبرع+بالدم+المجدول`;
+        const title = encodeURIComponent(isCurrent ? "تبرعت بالدم اليوم 🩸" : "موعد تبرع بالدم القادم 🩸");
+        const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateFormatted}/${dateFormatted}&details=تذكير+بموعد+التبرع+بالدم`;
         window.open(googleUrl, '_blank');
     }
 
     function processDate() {
-    let val = document.getElementById("inputDate").value;
-    if(!val) { alert("لطفاً اختر التاريخ"); return; }
+        let val = document.getElementById("inputDate").value;
+        if(!val) { alert("لطفاً اختر التاريخ"); return; }
 
-    let startDate = new Date(val);
-    let tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = ""; 
+        let tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = ""; 
 
-    let rollingDate = new Date(startDate);
-    
-    for(let i=1; i<=5; i++) {
-        // إضافة الـ 56 يوماً أولاً
-        rollingDate.setDate(rollingDate.getDate() + INTERVAL);
+        let rollingDate = new Date(val);
         
-        let extensionNote = "";
-        let dayOfWeek = rollingDate.getDay(); // 5 = الجمعة, 6 = السبت
+        for(let i=1; i<=5; i++) {
+            let extensionNote = "";
+            
+            // في المرة الأولى (i=1) لا نضيف 56 يوماً، بل نستخدم التاريخ المختار نفسه
+            if (i > 1) {
+                rollingDate.setDate(rollingDate.getDate() + INTERVAL);
+                
+                // فحص العطلة للمواعيد المستقبلية فقط
+                let dayOfWeek = rollingDate.getDay(); 
+                if (dayOfWeek === 5) {
+                    rollingDate.setDate(rollingDate.getDate() + 2);
+                    extensionNote = '<br><small style="color:#e67e22; font-weight:bold;">⚠️ تم التمديد للأحد (عطلة)</small>';
+                } else if (dayOfWeek === 6) {
+                    rollingDate.setDate(rollingDate.getDate() + 1);
+                    extensionNote = '<br><small style="color:#e67e22; font-weight:bold;">⚠️ تم التمديد للأحد (عطلة)</small>';
+                }
+            }
 
-        // التحقق من عطلة نهاية الأسبوع (الجمعة والسبت)
-        if (dayOfWeek === 5) { // إذا صادف الجمعة
-            rollingDate.setDate(rollingDate.getDate() + 2); // تمديد للأحد
-            extensionNote = '<br><small style="color:#e67e22;">⚠️ تم التمديد للأحد (عطلة نهاية أسبوع)</small>';
-        } else if (dayOfWeek === 6) { // إذا صادف السبت
-            rollingDate.setDate(rollingDate.getDate() + 1); // تمديد للأحد
-            extensionNote = '<br><small style="color:#e67e22;">⚠️ تم التمديد للأحد (عطلة نهاية أسبوع)</small>';
+            let dateISO = rollingDate.toISOString().split('T')[0];
+            let dateArabic = rollingDate.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            let hijri = toHijri(rollingDate);
+            
+            // تمييز السطر الأول بكلمة "الحالي"
+            let label = (i === 1) ? "تبرعك الحالي" : "الموعد القادم";
+            let rowColor = (i === 1) ? 'style="background-color: #fff0f0;"' : "";
+
+            let row = `<tr ${rowColor}>
+                <td><b>${i}</b><br><small>${label}</small></td>
+                <td><b>${dateArabic}</b>${extensionNote}<br><small style="color:#888;">${hijri}</small></td>
+                <td><button class="btn-cal" onclick="openCalendar('${dateISO}', ${i === 1})">${i === 1 ? 'تسجيل' : 'إضافة'} 📅</button></td>
+            </tr>`;
+            tableBody.innerHTML += row;
         }
-
-        let dateISO = rollingDate.toISOString().split('T')[0];
-        let dateArabic = rollingDate.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        let hijri = toHijri(rollingDate);
         
-        let row = `<tr>
-            <td><b>${i}</b></td>
-            <td>
-                <b>${dateArabic}</b>
-                ${extensionNote}
-                <br><small style="color:#888;">${hijri}</small>
-            </td>
-            <td><button class="btn-cal" onclick="openCalendar('${dateISO}')">إضافة 📅</button></td>
-        </tr>`;
-        tableBody.innerHTML += row;
+        document.getElementById("resultTable").style.display = "table";
+        document.getElementById("actionButtons").style.display = "block";
+        
+        let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        let msgBox = document.getElementById("motivationMsg");
+        msgBox.innerText = randomQuote;
+        msgBox.style.display = "block";
+
+        document.getElementById("resultTable").scrollIntoView({ behavior: 'smooth' });
     }
-    
-    document.getElementById("resultTable").style.display = "table";
-    document.getElementById("actionButtons").style.display = "block";
-    
-    let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-    let msgBox = document.getElementById("motivationMsg");
-    msgBox.innerText = randomQuote;
-    msgBox.style.display = "block";
 
-    document.getElementById("resultTable").scrollIntoView({ behavior: 'smooth' });
-}
-
-    // دالة لجلب نص الجدول مرتباً
+    // دوال النسخ والمشاركة كما هي
     function getTableText() {
         let rows = document.querySelectorAll("#tableBody tr");
-        let text = "🗓️ جدول تبرعاتي بالدم:\n\n";
+        let text = "🗓️ جدول تبرعاتي بالدم (عمر السبيعي):\n\n";
         rows.forEach((row, index) => {
             let date = row.querySelectorAll("td")[1].innerText.replace("\n", " - ");
-            text += `${index + 1}. موعد: ${date}\n`;
+            text += `${index + 1}. ${date}\n`;
         });
-        text += "\nبدمك تُحيي نفساً.. جزاك الله خيراً.";
         return text;
     }
 
     function copyFullData() {
-        navigator.clipboard.writeText(getTableText()).then(() => alert("✅ تم نسخ جدول العطاء بنجاح"));
+        navigator.clipboard.writeText(getTableText()).then(() => alert("✅ تم نسخ جدول العطاء"));
     }
 
-    // وظيفة المشاركة الاحترافية (Web Share API)
     async function shareTable() {
-        const shareData = {
-            title: 'جدول تبرعات الدم',
-            text: getTableText(),
-        };
-
         try {
             if (navigator.share) {
-                // تفتح قائمة المشاركة الأصلية في الآيفون أو الأندرويد
-                await navigator.share(shareData);
-            } else {
-                // إذا كان المتصفح قديماً ولا يدعم المشاركة، نقوم بالنسخ كبديل
-                copyFullData();
-                alert("المشاركة غير مدعومة في هذا المتصفح، تم نسخ النص بدلاً من ذلك.");
-            }
-        } catch (err) {
-            console.log("إلغاء المشاركة أو خطأ: ", err);
-        }
+                await navigator.share({ title: 'جدول تبرعات الدم', text: getTableText() });
+            } else { copyFullData(); }
+        } catch (err) { console.log(err); }
     }
 </script>
 
 </body>
-
 </html>
