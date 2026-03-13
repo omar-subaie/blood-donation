@@ -6,6 +6,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+<style>
+    /* تعريف الألوان للوضع الفاتح كافتراضي */
+    :root {
+        --bg-color: #fff8f8;
+        --box-bg: #ffffff;
+        --text-main: #333333;
+        --text-secondary: #555555;
+        --card-bg: #fdf2f2;
+        --card-border: #ffcdd2;
+        --table-header: #f8f9fa;
+        --border-color: #eeeeee;
+        --accent-color: #c62828;
+    }
+
+    /* التبديل التلقائي للوضع الليلي */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg-color: #121212;
+            --box-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --card-bg: #2d1a1a;
+            --card-border: #5d2a2a;
+            --table-header: #252525;
+            --border-color: #333333;
+            --accent-color: #ef5350; /* درجة أحمر أفتح قليلاً لتناسب السواد */
+        }
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl;
+        text-align: center;
+        background: var(--bg-color);
+        color: var(--text-main);
+        padding: 20px;
+        margin: 0;
+        transition: background 0.3s ease;
+    }
+
+    .box {
+        background: var(--box-bg);
+        padding: 25px;
+        border-radius: 20px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+        border-top: 10px solid var(--accent-color);
+        transition: background 0.3s ease;
+    }
+
+    h2 { color: var(--accent-color); margin-bottom: 5px; font-size: 24px; }
+    .hero-text { color: var(--text-secondary); font-size: 16px; margin-bottom: 20px; line-height: 1.6; }
+    
+    .today-card {
+        background: var(--card-bg);
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid var(--card-border);
+        margin-bottom: 25px;
+    }
+
+    input[type="date"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        background: var(--box-bg);
+        color: var(--text-main);
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        box-sizing: border-box;
+        margin-top: 10px;
+    }
+
+    .schedule-table th { 
+        background-color: var(--table-header); 
+        color: var(--accent-color); 
+        border-bottom: 2px solid var(--accent-color); 
+    }
+
+    .schedule-table td { 
+        color: var(--text-main);
+        border-bottom: 1px solid var(--border-color); 
+    }
+
+    .quote-box {
+        background: var(--table-header);
+        color: var(--text-secondary);
+        border-left: 3px solid var(--accent-color);
+        border-right: 3px solid var(--accent-color);
+    }
+    
+    /* بقية الأزرار والخصائص تبقى كما هي لأن ألوانها ثابتة وجميلة */
+    button { ... } 
+</style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             direction: rtl;
