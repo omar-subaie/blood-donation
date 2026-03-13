@@ -194,39 +194,57 @@
     }
 
     function processDate() {
-        let val = document.getElementById("inputDate").value;
-        if(!val) { alert("لطفاً اختر التاريخ"); return; }
+    let val = document.getElementById("inputDate").value;
+    if(!val) { alert("لطفاً اختر التاريخ"); return; }
 
-        let startDate = new Date(val);
-        let tableBody = document.getElementById("tableBody");
-        tableBody.innerHTML = ""; 
+    let startDate = new Date(val);
+    let tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = ""; 
 
-        let rollingDate = new Date(startDate);
+    let rollingDate = new Date(startDate);
+    
+    for(let i=1; i<=5; i++) {
+        // إضافة الـ 56 يوماً أولاً
+        rollingDate.setDate(rollingDate.getDate() + INTERVAL);
         
-        for(let i=1; i<=5; i++) {
-            let dateISO = rollingDate.toISOString().split('T')[0];
-            let dateArabic = rollingDate.toLocaleDateString('ar-EG');
-            let hijri = toHijri(rollingDate);
-            
-            let row = `<tr>
-                <td><b>${i}</b></td>
-                <td><b>${dateArabic}</b><br><small>${hijri}</small></td>
-                <td><button class="btn-cal" onclick="openCalendar('${dateISO}')">إضافة 📅</button></td>
-            </tr>`;
-            tableBody.innerHTML += row;
-            rollingDate.setDate(rollingDate.getDate() + INTERVAL);
+        let extensionNote = "";
+        let dayOfWeek = rollingDate.getDay(); // 5 = الجمعة, 6 = السبت
+
+        // التحقق من عطلة نهاية الأسبوع (الجمعة والسبت)
+        if (dayOfWeek === 5) { // إذا صادف الجمعة
+            rollingDate.setDate(rollingDate.getDate() + 2); // تمديد للأحد
+            extensionNote = '<br><small style="color:#e67e22;">⚠️ تم التمديد للأحد (عطلة نهاية أسبوع)</small>';
+        } else if (dayOfWeek === 6) { // إذا صادف السبت
+            rollingDate.setDate(rollingDate.getDate() + 1); // تمديد للأحد
+            extensionNote = '<br><small style="color:#e67e22;">⚠️ تم التمديد للأحد (عطلة نهاية أسبوع)</small>';
         }
-        
-        document.getElementById("resultTable").style.display = "table";
-        document.getElementById("actionButtons").style.display = "block";
-        
-        let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-        let msgBox = document.getElementById("motivationMsg");
-        msgBox.innerText = randomQuote;
-        msgBox.style.display = "block";
 
-        document.getElementById("resultTable").scrollIntoView({ behavior: 'smooth' });
+        let dateISO = rollingDate.toISOString().split('T')[0];
+        let dateArabic = rollingDate.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        let hijri = toHijri(rollingDate);
+        
+        let row = `<tr>
+            <td><b>${i}</b></td>
+            <td>
+                <b>${dateArabic}</b>
+                ${extensionNote}
+                <br><small style="color:#888;">${hijri}</small>
+            </td>
+            <td><button class="btn-cal" onclick="openCalendar('${dateISO}')">إضافة 📅</button></td>
+        </tr>`;
+        tableBody.innerHTML += row;
     }
+    
+    document.getElementById("resultTable").style.display = "table";
+    document.getElementById("actionButtons").style.display = "block";
+    
+    let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    let msgBox = document.getElementById("motivationMsg");
+    msgBox.innerText = randomQuote;
+    msgBox.style.display = "block";
+
+    document.getElementById("resultTable").scrollIntoView({ behavior: 'smooth' });
+}
 
     // دالة لجلب نص الجدول مرتباً
     function getTableText() {
