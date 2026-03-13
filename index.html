@@ -178,9 +178,19 @@
         }).format(date);
     }
 
-    window.onload = function() {
-        document.getElementById("inputDate").valueAsDate = new Date();
-    };
+   window.onload = function() {
+    // 1. وضع تاريخ اليوم في خانة الإدخال ليظهر في الهاتف
+    let today = new Date();
+    document.getElementById("inputDate").valueAsDate = today;
+
+    // 2. حساب موعد التبرع القادم (اليوم + 56 يوم) لعرضه في البطاقة العلوية
+    let nextDate = new Date();
+    nextDate.setDate(today.getDate() + INTERVAL);
+
+    // 3. عرض التاريخ في الصفحة (ميلادي وهجري)
+    document.getElementById("todayResult").innerText = nextDate.toLocaleDateString('ar-EG');
+    document.getElementById("todayHijri").innerText = "الموافق هجرياً: " + toHijri(nextDate);
+};
 
     function openCalendar(dateStr) {
         const d = new Date(dateStr);
