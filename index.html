@@ -231,7 +231,7 @@
     // دالة لجلب نص الجدول مرتباً
     function getTableText() {
         let rows = document.querySelectorAll("#tableBody tr");
-        let text = "🗓️ جدول تبرعاتي بالدم (تصميم عمر):\n\n";
+        let text = "🗓️ جدول تبرعاتي بالدم:\n\n";
         rows.forEach((row, index) => {
             let date = row.querySelectorAll("td")[1].innerText.replace("\n", " - ");
             text += `${index + 1}. موعد: ${date}\n`;
